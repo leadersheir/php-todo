@@ -24,3 +24,18 @@ $router->post(
     '/api/tasks/delete',
     fn() => $pageController->deleteTask()
 );
+
+$router->post(
+    '/api/todolists/create',
+    fn() => $pageController->createTodoList()
+);
+
+$router->post(
+    '/api/todolists/update',
+    fn() => $pageController->updateTodoList()
+);
+
+$router->post(
+    '/api/todolists/delete',
+    fn() => $pageController->deleteTodoList()
+);

@@ -93,4 +93,47 @@ class PageController {
 
         http_response_code(204);
     }
+
+    public function createTodoList () {
+        $todoListName = $_POST['todoListName'] ?? null;
+
+        if (trim($todoListName) === '') {
+            http_response_code(422);
+
+            echo json_encode(
+                ["error" => "Invalid todolist name"]
+            );
+
+            return;
+        }
+
+        $newTodoListId = $this->todolist->createOne ([
+            'name' => $todoListName
+        ]);
+
+        http_response_code(200);
+
+        echo json_encode([
+            'validated' => true,
+            'todoListId' => $newTodoListId,
+        ]);
+    }
+
+    public function updateTodoList () {
+        $todoListId = $_POST['todoListId'] ?? null;
+        $updatedName = $_POST['updatedTodoListName'] ?? null;
+
+        $this->todolist->updateOneById(
+            $todoListId,
+            'name',
+            $updatedName
+        );
+    }
+
+    public function deleteTodoList () {
+        $todoListId = $_POST['todoListId'] ?? null;
+        $this->todolist->deleteOneById($todoListId);
+
+        http_response_code(204);
+    }
 }
