@@ -27,9 +27,13 @@
 
                 <aside class="col-md-3 col-lg-2 border-end bg-white p-3">
                     <h2 class="h6 text-uppercase text-secondary mb-3">My Lists</h2>
-                    <button class="btn btn-primary w-100 mb-3">
-                        + New List
-                    </button>
+                    <div class="d-flex align-items-center mb-3">
+                        <input type="text" name="new-todolist-input" id="new-todolist-input" class="form-control me-2" placeholder="New list name">
+                        <button class="btn btn-primary w-40 flex-shrink-0 text-nowrap">
+                            + New List
+                        </button>
+                    </div>
+                    
 
                     <div class="list-group list-group-flush">
                         <?php foreach ($todoLists as $todoList): ?>
