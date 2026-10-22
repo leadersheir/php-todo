@@ -102,6 +102,7 @@
             const taskForm = document.getElementById('new-task-form');
             const taskInput = document.getElementById('new-task-input');
             const taskList = document.getElementById('task-list');
+            const listOfTodoLists = document.getElementById('todolist-container');
 
             const updateTaskCount = () => {
 
@@ -198,6 +199,38 @@
                 } catch (e) {
                     console.error(e);
                 }
+            })
+
+            const editTodoListName = todoList => {
+                const todolistEditInput = document.createElement('input');
+                todolistEditInput.classList.add('form-control', 'flex-grow-1');
+                todolistEditInput.type = 'text';
+                todolistEditInput.value = todoList.textContent.trim();
+                todoList.replaceWith(todolistEditInput);
+                todolistEditInput.focus();
+            }
+
+            // edit a todolist name
+            let timeOut = null;
+            
+            listOfTodoLists.addEventListener('click', (e) => {
+                const todolist = e.target.closest('a');
+                if (!todolist) return;
+
+                e.preventDefault();
+                if (e.detail === 1) {
+                    timeOut = setTimeout(() => {
+                        window.location.assign(todolist.href);
+                    }, 200);
+                }
+            })
+
+            listOfTodoLists.addEventListener('dblclick', (e) => {
+                clearTimeout(timeOut);
+                console.log('Doubleclick');
+                const todolist = e.target.closest('a');
+                console.log(todolist);
+                editTodoListName(todolist);
             })
 
             // add task on create-task form submit
