@@ -9,7 +9,7 @@ class PageController {
     public function index() {
         $todoLists = $this->todolist->getAll();
 
-        $selectedListID = isset($_GET['list']) ? (int) $_GET['list'] : (isset($todoLists[0]) ? (int) todoLists[0]['id']: null);
+        $selectedListID = isset($_GET['list']) ? (int) $_GET['list'] : (isset($todoLists[0]) ? (int) $todoLists[0]['id']: null);
 
         $selectedList = $this->todolist->getOneByID($selectedListID);
 
@@ -116,6 +116,7 @@ class PageController {
         echo json_encode([
             'validated' => true,
             'todoListId' => $newTodoListId,
+            'todoListName' => $todoListName
         ]);
     }
 

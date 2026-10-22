@@ -27,15 +27,19 @@
 
                 <aside class="col-md-3 col-lg-2 border-end bg-white p-3">
                     <h2 class="h6 text-uppercase text-secondary mb-3">My Lists</h2>
-                    <div class="d-flex align-items-center mb-3">
-                        <input type="text" name="new-todolist-input" id="new-todolist-input" class="form-control me-2" placeholder="New list name">
-                        <button class="btn btn-primary w-40 flex-shrink-0 text-nowrap">
-                            + New List
-                        </button>
-                    </div>
-                    
+                    <form action="" id="new-todolist-form">
+                        <div class="input-group">
+                            <input type="text" name="todoListName" id="new-todolist-input" class="form-control me-2" placeholder="New list name">
+                            <button
+                            class="btn btn-primary w-40 flex-shrink-0 text-nowrap"
+                            type="submit"
+                            >
+                                + New List
+                            </button>
+                        </div>
+                    </form>
 
-                    <div class="list-group list-group-flush">
+                    <div id="todolist-container" class="list-group list-group-flush">
                         <?php foreach ($todoLists as $todoList): ?>
                             <a
                                 href="?list=<?= (int) $todoList['id'] ?>" 
@@ -94,6 +98,7 @@
         </div>   
 
         <script>
+            const todolistForm = document.getElementById('new-todolist-form');
             const taskForm = document.getElementById('new-task-form');
             const taskInput = document.getElementById('new-task-input');
             const taskList = document.getElementById('task-list');
@@ -150,7 +155,50 @@
                 updateTaskCount();
             }
 
+            const addNewTodoList = todoList => {
+                const todoListContainer = document.querySelector('#todolist-container');
+
+                const todolistElement = document.createElement('a');
+                todolistElement.classList.add('mb-2', 'list-group-item', 'list-group-item-action', 'rounded');
+                todolistElement.href = `?list=${todoList.id}`;
+                todolistElement.textContent = todoList.todoListName;
+
+                todoListContainer.appendChild(todolistElement);
+            }
+
             document.addEventListener('DOMContentLoaded', updateTaskCount);
+
+            //add new todolist
+            todolistForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                console.log("new todolist form submitted");
+
+                const formData = new FormData(todolistForm);
+
+                console.log(formData);
+
+                try {
+                    const res = await fetch('/api/todolists/create', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const todoList = await res.json();
+
+                    console.log(todoList);
+
+                    addNewTodoList(todoList);
+
+                    const todoListInput = document.querySelector('#new-todolist-input');
+                    todoListInput.value = '';
+                    todoListInput.blur();
+
+
+                } catch (e) {
+                    console.error(e);
+                }
+            })
 
             // add task on create-task form submit
             taskForm.addEventListener('submit', async (e) => {
