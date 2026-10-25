@@ -43,6 +43,7 @@
                         <?php foreach ($todoLists as $todoList): ?>
                             <a
                                 href="?list=<?= (int) $todoList['id'] ?>" 
+                                id="<?= (int) $todoList['id'] ?>"
                                 class="mb-2 list-group-item list-group-item-action
                                 <?= (int) $todoList['id'] === $selectedListID ? 'active' : '' ?>
                                 rounded">
@@ -161,7 +162,7 @@
 
                 const todolistElement = document.createElement('a');
                 todolistElement.classList.add('mb-2', 'list-group-item', 'list-group-item-action', 'rounded');
-                todolistElement.href = `?list=${todoList.id}`;
+                todolistElement.href = `?list=${todoList.todoListId}`;
                 todolistElement.textContent = todoList.todoListName;
 
                 todoListContainer.appendChild(todolistElement);
@@ -208,6 +209,30 @@
                 todolistEditInput.value = todoList.textContent.trim();
                 todoList.replaceWith(todolistEditInput);
                 todolistEditInput.focus();
+                todolistEditInput.addEventListener('keydown', async (e) => {
+                    if (e.key === 'Enter') {
+                        const formData = new FormData();
+                        formData.set('todoListId', todoList.id);
+                        formData.set('updatedTodoListName', todolistEditInput.value);
+
+                        const uri = todolistEditInput.value.trim() === '' ? '/api/todolists/delete' : '/api/todolists/update';
+
+                        try {
+                            const res = await fetch(uri, {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (await res) {
+                                window.location.href = "/";
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                    
+                    
+                })
             }
 
             // edit a todolist name
@@ -225,7 +250,7 @@
                 }
             })
 
-            listOfTodoLists.addEventListener('dblclick', (e) => {
+            listOfTodoLists.addEventListener('dblclick', async (e) => {
                 clearTimeout(timeOut);
                 console.log('Doubleclick');
                 const todolist = e.target.closest('a');
